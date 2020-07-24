@@ -1,7 +1,5 @@
 package com.algaworks.algamoneyapi.service;
 
-import java.util.Optional;
-
 import com.algaworks.algamoneyapi.model.Pessoa;
 import com.algaworks.algamoneyapi.repository.PessoaRepository;
 
