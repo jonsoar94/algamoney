@@ -14,7 +14,7 @@ public class PessoaService {
     @Autowired
     private PessoaRepository pessoaRepository;
 
-    private Pessoa buscarPeloCodigo(Long codigo) {
+    public Pessoa buscarPeloCodigo(Long codigo) {
         return pessoaRepository.findById(codigo)
             .orElseThrow(() -> new EmptyResultDataAccessException(1));
     }

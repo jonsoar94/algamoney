@@ -31,7 +31,7 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
             HttpHeaders headers, HttpStatus status, WebRequest request) {
-        
+
         String mensagemUsuario = messageSource.getMessage("mensagem.invalida", null, LocaleContextHolder.getLocale());
         String mensagemDesenvolvedor = ex.getMessage();
         List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
@@ -48,9 +48,11 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
-    public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, WebRequest request) {
-        
-        String mensagemUsuario = messageSource.getMessage("recurso.nao.encontrado", null, LocaleContextHolder.getLocale());
+    public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex,
+            WebRequest request) {
+
+        String mensagemUsuario = messageSource.getMessage("recurso.nao.encontrado", null,
+                LocaleContextHolder.getLocale());
         String mensagemDesenvolvedor = ex.getMessage();
         List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 
@@ -58,9 +60,11 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
-        
-        String mensagemUsuario = messageSource.getMessage("recurso.operacao.nao.permitida", null, LocaleContextHolder.getLocale());
+    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex,
+            WebRequest request) {
+
+        String mensagemUsuario = messageSource.getMessage("recurso.operacao.nao.permitida", null,
+                LocaleContextHolder.getLocale());
         String mensagemDesenvolvedor = ExceptionUtils.getRootCauseMessage(ex);
         List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 
@@ -77,13 +81,12 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
         return erros;
     }
 
-
     public static class Erro {
 
         private String mensagemUsuario;
         private String mensagemDesenvolvedor;
 
-        Erro(String mensagemUsuario, String mensagemDesenvolvedor) {
+        public Erro(String mensagemUsuario, String mensagemDesenvolvedor) {
             this.mensagemUsuario = mensagemUsuario;
             this.mensagemDesenvolvedor = mensagemDesenvolvedor;
         }
