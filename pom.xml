@@ -71,10 +71,17 @@
 			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
 
+		<!-- APACHE COMMONS-->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-jwt</artifactId>
+			<version>1.1.0.RELEASE</version>
 		</dependency>
 
 		<dependency>
