@@ -20,6 +20,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,16 +46,19 @@ public class LancamentoResource {
     @Autowired
     private MessageSource messageSource;
 
+    @PreAuthorize("hasRole('ROLE_PESQUISAR_LANCAMENTO') and #oauth.hasScope('read')")
     @GetMapping
     public Page<Lancamento> pesquisar(LancamentoFilter lancamentoFilter, Pageable pageable) {
         return lancamentoRepository.filtrar(lancamentoFilter, pageable);
     }
 
+    @PreAuthorize("hasRole('ROLE_PESQUISAR_LANCAMENTO') and #oauth.hasScope('read')")
     @GetMapping("/{codigo}")
     public Lancamento buscar(@PathVariable Long codigo) {
         return LancamentoService.buscarPorId(codigo);
     }
 
+    @PreAuthorize("hasRole('ROLE_CADASTRAR_LANCAMENTO') and #oauth.hasScope('write')")
     @PostMapping
     public Lancamento criar(@RequestBody Lancamento lancamento, HttpServletResponse response) {
         Lancamento lancamentoSalvo = LancamentoService.criar(lancamento);
@@ -62,6 +66,7 @@ public class LancamentoResource {
         return lancamentoSalvo;
     }
 
+    @PreAuthorize("hasRole('ROLE_REMOVER_LANCAMENTO') and #oauth.hasScope('write')")
     @DeleteMapping("/{codigo}")
     public void deletar(@PathVariable Long codigo) {
         lancamentoRepository.deleteById(codigo);

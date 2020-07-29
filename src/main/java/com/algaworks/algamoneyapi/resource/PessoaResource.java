@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +39,7 @@ public class PessoaResource {
     private PessoaService pessoaService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_CADASTRAR_PESSOA') and #oauth.hasScope('write')")
     @ResponseStatus(HttpStatus.CREATED)
     public Pessoa criar(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response) {
         Pessoa pessoaSalva = pessoaRepository.save(pessoa);
@@ -45,24 +47,28 @@ public class PessoaResource {
         return pessoaSalva;
     }
 
+    @PreAuthorize("hasRole('ROLE_PESQUISAR_PESSOA') and #oauth.hasScope('read')")
     @GetMapping("/{codigo}")
     public ResponseEntity<Pessoa> buscarPeloCodigo(@PathVariable Long codigo) {
         Optional<Pessoa> pessoa = pessoaRepository.findById(codigo);
         return pessoa.isPresent() ? ResponseEntity.ok(pessoa.get()) : ResponseEntity.notFound().build();
     }
 
+    @PreAuthorize("hasRole('ROLE_REMOVER_PESSOA') and #oauth.hasScope('write')")
     @DeleteMapping("/{codigo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long codigo) {
         pessoaRepository.deleteById(codigo);
     }
 
+    @PreAuthorize("hasRole('ROLE_CADASTRAR_PESSOA') and #oauth.hasScope('write')")
     @PutMapping("/{codigo}")
     @ResponseStatus(HttpStatus.OK)
     public Pessoa atualizar(@PathVariable Long codigo, @Valid @RequestBody Pessoa pessoa) {
         return pessoaService.atualizar(pessoa, codigo);
     }
 
+    @PreAuthorize("hasRole('ROLE_CADASTRAR_PESSOA') and #oauth.hasScope('write')")
     @PutMapping("/{codigo}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizarPropriedadeAtivo(@PathVariable Long codigo, @RequestBody Boolean ativo) {
