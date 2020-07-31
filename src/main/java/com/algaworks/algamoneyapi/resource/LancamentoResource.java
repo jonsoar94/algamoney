@@ -11,6 +11,7 @@ import com.algaworks.algamoneyapi.exceptionhandler.AlgamoneyExceptionHandler.Err
 import com.algaworks.algamoneyapi.model.Lancamento;
 import com.algaworks.algamoneyapi.repository.LancamentoRepository;
 import com.algaworks.algamoneyapi.repository.filter.LancamentoFilter;
+import com.algaworks.algamoneyapi.repository.projection.ResumoLancamento;
 import com.algaworks.algamoneyapi.service.LancamentoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,19 +47,25 @@ public class LancamentoResource {
     @Autowired
     private MessageSource messageSource;
 
-    @PreAuthorize("hasRole('ROLE_PESQUISAR_LANCAMENTO') and #oauth.hasScope('read')")
+    @PreAuthorize("hasRole('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
     @GetMapping
     public Page<Lancamento> pesquisar(LancamentoFilter lancamentoFilter, Pageable pageable) {
         return lancamentoRepository.filtrar(lancamentoFilter, pageable);
     }
 
-    @PreAuthorize("hasRole('ROLE_PESQUISAR_LANCAMENTO') and #oauth.hasScope('read')")
+    @PreAuthorize("hasRole('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+    @GetMapping(params = "resumo")
+    public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
+        return lancamentoRepository.resumir(lancamentoFilter, pageable);
+    }
+
+    @PreAuthorize("hasRole('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
     @GetMapping("/{codigo}")
     public Lancamento buscar(@PathVariable Long codigo) {
         return LancamentoService.buscarPorId(codigo);
     }
 
-    @PreAuthorize("hasRole('ROLE_CADASTRAR_LANCAMENTO') and #oauth.hasScope('write')")
+    @PreAuthorize("hasRole('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
     @PostMapping
     public Lancamento criar(@RequestBody Lancamento lancamento, HttpServletResponse response) {
         Lancamento lancamentoSalvo = LancamentoService.criar(lancamento);
@@ -66,7 +73,7 @@ public class LancamentoResource {
         return lancamentoSalvo;
     }
 
-    @PreAuthorize("hasRole('ROLE_REMOVER_LANCAMENTO') and #oauth.hasScope('write')")
+    @PreAuthorize("hasRole('ROLE_REMOVER_LANCAMENTO') and #oauth2.hasScope('write')")
     @DeleteMapping("/{codigo}")
     public void deletar(@PathVariable Long codigo) {
         lancamentoRepository.deleteById(codigo);
